@@ -1,7 +1,7 @@
 
 
 
-DB_DSN := "postgres://postgres:yourpassword@localhost:5432/main?sslmode=disable"
+DB_DSN := "postgres://postgres:yourpassword@localhost:5432/postgres?sslmode=disable"
 MIGRATE := migrate -path ./migrations -database $(DB_DSN)
 
 # Таргет для создания новой миграции
