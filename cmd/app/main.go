@@ -1,16 +1,18 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"petproject/internal/database"
 	"petproject/internal/handlers"
 	"petproject/internal/taskService"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	database.InitDB()
-	database.DB.AutoMigrate(&taskService.Task{})
+	// database.DB.AutoMigrate(&taskService.Task{})
 
 	repo := taskService.NewTaskRepository(database.DB) // подключение к БД
 	service := taskService.NewTaskService(repo)
@@ -23,5 +25,7 @@ func main() {
 	router.HandleFunc("/api/messages/{id}", handler.DeleteTaskHandler).Methods("DELETE")
 
 
-	http.ListenAndServe(":8080", router)
+	if err := http.ListenAndServe(":8080", router);err!= nil {
+		log.Printf("Ошибка в запуске сервера %v" , err)
+	}
 }
