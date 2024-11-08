@@ -14,7 +14,7 @@ func main() {
 	database.InitDB()
 	// database.DB.AutoMigrate(&taskService.Task{})
 
-	repo := taskService.NewTaskRepository(database.DB) // подключение к БД
+	repo := taskService.NewTaskRepository(database.DB) // соединение с базой данных
 	service := taskService.NewTaskService(repo)
 	handler := handlers.NewHandler(service)
 

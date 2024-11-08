@@ -6,7 +6,6 @@ import (
 	
     
 )
-
 // Как уже говорилось выше, репозиторий это сущность для работы с базой данных.
 // Также для организации “логики” нашего приложения мы будем использовать паттерн Repository. Его суть заключается
 //в том, что мы выносим всю работу с базой данных в отдельную сущность под названием репозиторий
@@ -28,10 +27,6 @@ type TaskRepository interface {
 //Этот интерфейс говорит: "любая структура, которая реализует эти методы, 
 //может быть использована как TaskRepository"
 
-
-
-
-
 type taskRepository struct { // структура для работы с БД
 	dB *gorm.DB // Будет храниться подключение к бд, т.е через нее можем напрямую работать с бд
 }
@@ -39,7 +34,6 @@ type taskRepository struct { // структура для работы с БД
 func NewTaskRepository(db *gorm.DB) *taskRepository {
 	return &taskRepository{dB: db}
 }
-
 
 
 func(r *taskRepository) CreateTask(task Task) (Task, error) {
