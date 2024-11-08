@@ -2,30 +2,33 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"petproject/internal/database"
 	"petproject/internal/handlers"
 	"petproject/internal/taskService"
 
-	"github.com/gorilla/mux"
+	
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
 	database.InitDB()
-	// database.DB.AutoMigrate(&taskService.Task{})
+	database.DB.AutoMigrate(&taskService.Task{})
 
 	repo := taskService.NewTaskRepository(database.DB) // соединение с базой данных
 	service := taskService.NewTaskService(repo)
 	handler := handlers.NewHandler(service)
 
-	router := mux.NewRouter()
-	router.HandleFunc("/api/messages", handler.GetTasksHandler).Methods("GET")
-	router.HandleFunc("/api/messages", handler.PostTaskHandler).Methods("POST")
-	router.HandleFunc("/api/messages/{id}", handler.PutTasksHandler).Methods("PUT")
-	router.HandleFunc("/api/messages/{id}", handler.DeleteTaskHandler).Methods("DELETE")
+	e:= echo.New()
 
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	if err := http.ListenAndServe(":8080", router);err!= nil {
-		log.Printf("Ошибка в запуске сервера %v" , err)
+	strictHandler:= tasks.NewStrictHandler(handler, nil)
+	tasks.RegisterHandlers(e, strictHandler)
+
+	if err:= e.Start(":8080"); err!= nil {
+		log.Fatalf("failed to start with err: %v", err)
 	}
+	
 }
